@@ -1,17 +1,7 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:21-jdk
 
-RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-RUN echo 'Asia/Shanghai' >/etc/timezone
+COPY target/demo-0.0.1-SNAPSHOT.jar /app.jar
 
-ENV JAVA_OPTS ''
+EXPOSE 8080
 
-WORKDIR /app
-ADD target/demo-0.0.1-SNAPSHOT.jar .
-
-
-ENTRYPOINT ["sh", "-c", "set -e && java -XX:+PrintFlagsFinal \
-                                           -XX:+HeapDumpOnOutOfMemoryError \
-                                           -XX:HeapDumpPath=/heapdump/heapdump.hprof \
-                                           -XX:+UnlockExperimentalVMOptions \
-                                           -XX:+UseCGroupMemoryLimitForHeap \
-                                           $JAVA_OPTS -jar prometheus-test-demo-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
