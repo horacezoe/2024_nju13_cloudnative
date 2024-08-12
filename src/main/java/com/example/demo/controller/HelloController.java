@@ -12,7 +12,7 @@ import java.util.Map;
 @RequestMapping("/api")
 public class HelloController {
 
-    @RateLimit(value = 10, capacity = 100)
+    @RateLimit(value = 10, capacity = 2)
     @GetMapping("/hello")
     public Map<String, String> sayHello() {
         Map<String, String> response = new HashMap<>();
