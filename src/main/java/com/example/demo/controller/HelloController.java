@@ -16,8 +16,6 @@ import java.util.Map;
 @RequestMapping("/api")
 public class HelloController {
 
-    Logger logger = LoggerFactory.getLogger(TestController.class);
-
     private final MetricsService metricsService;
 
     @Autowired
@@ -31,7 +29,6 @@ public class HelloController {
         Map<String, String> response = new HashMap<>();
         response.put("msg", "hello");
         metricsService.recordRequest();
-        logger.info("hello");
         return response;
     }
 }

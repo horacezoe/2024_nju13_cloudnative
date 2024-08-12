@@ -6,7 +6,7 @@ RUN echo 'Asia/Shanghai' >/etc/timezone
 ENV JAVA_OPTS ''
 
 WORKDIR /app
-ADD target/prometheus-test-demo-0.0.1-SNAPSHOT.jar .
+ADD target/demo-0.0.1-SNAPSHOT.jar .
 
 
 ENTRYPOINT ["sh", "-c", "set -e && java -XX:+PrintFlagsFinal \
