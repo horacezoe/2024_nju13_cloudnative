@@ -19,7 +19,7 @@ public class RateLimitAspect {
     @Around("@annotation(rateLimit)")
     public Object limit(ProceedingJoinPoint joinPoint, RateLimit rateLimit) throws Throwable {
         String methodName = joinPoint.getSignature().getName();
-        //这里可以把key加上其他信息，如客户端ip，以实现对单个ip的限流
+        // 这里可以把key加上其他信息，如客户端ip，以实现对单个ip的限流
         String key = "rateLimit:" + methodName;
         long value = redisTemplate.opsForValue().increment(key, 1);
         if (value == 1) {
@@ -31,4 +31,3 @@ public class RateLimitAspect {
         return joinPoint.proceed();
     }
 }
-
