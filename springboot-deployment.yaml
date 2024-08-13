@@ -17,6 +17,7 @@ spec:
       containers:
       - name: springboot
         image: springboot:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 8080
         resources:
