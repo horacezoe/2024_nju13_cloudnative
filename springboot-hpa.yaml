@@ -1,0 +1,12 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: springboot-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: springboot-deployment
+  minReplicas: 1  # 最小副本数
+  maxReplicas: 10 # 最大副本数
+  targetCPUUtilizationPercentage: 50 # 目标 CPU 使用率
