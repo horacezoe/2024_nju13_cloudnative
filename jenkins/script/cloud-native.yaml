@@ -21,7 +21,7 @@ spec:
         app: cloud-native-project
     spec:
       containers:
-        - image: harbor.edu.cn/nju13/cloud-native-project:{VERSION}
+        - image: harbor.edu.cn/library/2024-nju13-cloudnative:{VERSION}
           name: cloud-native-project
           resources:
             requests:
