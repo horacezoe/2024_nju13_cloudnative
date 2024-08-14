@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+    stages {
+        stage('Clone Code') {
+            steps {
+                echo "1.Git Clone Code"
+                sh 'curl "http://p2.nju.edu.cn/portal_io/login?username=usm&password=pwd"'
+                git url: "https://gitee.com/wengtiancheng/2024_nju13_cloudnative.git"
+            }
+        }
+
+        stage('Maven Build & Test') {
+            steps {
+                script {
+                echo "Building and testing the project using Maven"
+                    docker.image('maven:latest').inside("-v /root/.m2:/root/.m2") {
+
+                        sh "mvn clean install"
+                    }
+                }
+            }
+        }
+
+        stage('Image Build') {
+            steps {
+                echo "3.Image Build Stage"
+                sh 'docker build -f Dockerfile --build-arg jar_name=target/2024-nju13-cloudnative.jar -t 2024-nju13-cloudnative:${BUILD_ID} . '
+                sh 'docker tag  2024-nju13-cloudnative:${BUILD_ID}  harbor.edu.cn/library/2024-nju13-cloudnative:${BUILD_ID}'
+            }
+        }
+
+        stage('Image Push') {
+            steps {
+                echo "4.Push Docker Image Stage"
+                sh "docker login --username=admin harbor.edu.cn -p Harbor12345"
+                sh "docker push harbor.edu.cn/library/2024-nju13-cloudnative:${BUILD_ID}"
+            }
+        }
+
+        stage('Clone Git Repository') {
+            steps {
+                node('slave') {
+                    container('jnlp-kubectl') {
+                        echo "5. Git Clone YAML To Slave"
+                        git url: "https://gitee.com/wengtiancheng/2024_nju13_cloudnative.git"
+
+                        echo "6. Change YAML File Stage"
+                        sh 'sed -i "s#{VERSION}#${BUILD_ID}#g" ./jenkins/script/cloud-native.yaml'
+
+                        echo "7. Deploy To K8s Stage"
+                        sh 'kubectl apply -f ./jenkins/script/cloud-native.yaml'
+
+
+                    }
+                }
+            }
+        }
+    }
+}
